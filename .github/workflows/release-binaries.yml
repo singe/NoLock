@@ -1,0 +1,39 @@
+name: Release Binaries
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    name: Build and upload macOS artifacts
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select latest stable Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Build release artifacts
+        run: make all
+
+      - name: Package release assets
+        run: |
+          tar -C dist -czf "dist/NoLock-macos-$(uname -m).tar.gz" "NoLock"
+          ditto -c -k --sequesterRsrc --keepParent "dist/NoLock.app" "dist/NoLock-macos-$(uname -m).app.zip"
+
+      - name: Upload artifacts to existing release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "${{ github.event.release.tag_name }}" \
+            "dist/NoLock-macos-$(uname -m).tar.gz" \
+            "dist/NoLock-macos-$(uname -m).app.zip" \
+            --clobber

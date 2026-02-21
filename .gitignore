@@ -1,0 +1,19 @@
+# SwiftPM / build artifacts
+.build/
+Packages/
+Package.resolved
+
+# Release outputs
+dist/
+
+# Xcode / macOS user files
+DerivedData/
+*.xcodeproj/
+*.xcworkspace/
+*.xcuserstate
+*.xcuserdata/
+.DS_Store
+
+# Temporary files
+*.swp
+*.tmp
