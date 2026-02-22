@@ -10,6 +10,7 @@ INFO_PLIST := App/Info.plist
 APP_ICON_PNG ?= assets/icon.png
 ICONSET_DIR := .build/$(APP_NAME).iconset
 ICON_ICNS := .build/$(APP_NAME).icns
+SIGN_IDENTITY ?= -
 MODULE_CACHE_DIR := .build/ModuleCache
 BUILD_ENV := CLANG_MODULE_CACHE_PATH=$(PWD)/$(MODULE_CACHE_DIR) SWIFTPM_MODULECACHE_OVERRIDE=$(PWD)/$(MODULE_CACHE_DIR)
 
@@ -44,6 +45,7 @@ app: build-release
 	else \
 		echo "No $(APP_ICON_PNG) found; building app with default icon."; \
 	fi
+	codesign --force --deep --sign "$(SIGN_IDENTITY)" "$(APP_DIR)"
 	@echo "Built app bundle: $(APP_DIR)"
 
 icon:
